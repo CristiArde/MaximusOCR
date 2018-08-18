@@ -35,7 +35,7 @@ public class MaximusOCR extends AppCompatActivity {
         recordBtn.setOnClickListener(new View.OnClickListener(){
             @Override
                     public void onClick(View v){
-
+                        startSpeechListener();
             }
         });
     }
