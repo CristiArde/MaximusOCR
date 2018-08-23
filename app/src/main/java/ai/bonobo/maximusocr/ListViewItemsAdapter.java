@@ -47,7 +47,7 @@ public class ListViewItemsAdapter extends ArrayAdapter<String> {
             viewHolder=(ViewHolder) r.getTag();
         }
         viewHolder.txtDesc.setText(itemDescription[position]);
-        viewHolder.txtPrice.setText(itemPrice[position]);
+        viewHolder.txtPrice.setText(Integer.toString(itemPrice[position]));
 
         return r;
     }
