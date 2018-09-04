@@ -11,18 +11,20 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 /**
  * Created by cardel6 on 23/08/2018.
  */
 
 public class ListViewItemsAdapter extends ArrayAdapter<String> {
-    private String[] itemDescription;
-    private int[] itemPrice;
+    private ArrayList<String> itemDescription = new ArrayList<String>();
+    private  ArrayList<Integer> itemPrice = new ArrayList<Integer>();
     private final Activity context;
     // add image variable
 
     //add image in constructor
-    public ListViewItemsAdapter(Activity context, String[] itemDescription, int[] itemPrice) {
+    public ListViewItemsAdapter(Activity context, ArrayList<String> itemDescription, ArrayList<Integer> itemPrice) {
         super(context, R.layout.listviw_layout,itemDescription);
 
         this.context = context;
@@ -46,8 +48,8 @@ public class ListViewItemsAdapter extends ArrayAdapter<String> {
         }else{
             viewHolder=(ViewHolder) r.getTag();
         }
-        viewHolder.txtDesc.setText(itemDescription[position]);
-        viewHolder.txtPrice.setText(Integer.toString(itemPrice[position]));
+        viewHolder.txtDesc.setText(itemDescription.get(position));
+        viewHolder.txtPrice.setText(Integer.toString(itemPrice.get(position)));
 
         return r;
     }

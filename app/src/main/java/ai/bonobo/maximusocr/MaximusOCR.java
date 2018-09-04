@@ -19,8 +19,8 @@ import java.util.Locale;
 
 public class MaximusOCR extends AppCompatActivity {
 
-    String[] description = {"tomato", "onion", "apple"};
-    int[] price ={1, 2, 4};
+    ArrayList<String> description = new ArrayList<String>();
+    ArrayList<Integer> price = new ArrayList<Integer>();
     EditText totalTxt;
     ListView listView;
     ImageButton recordBtn;
@@ -35,12 +35,12 @@ public class MaximusOCR extends AppCompatActivity {
         listView = (ListView)findViewById(R.id.listView);
         recordBtn = (ImageButton)findViewById(R.id.recordBtn);
 
-        ListViewItemsAdapter listViewAdapter = new ListViewItemsAdapter(this, description, price);
-        listView.setAdapter(listViewAdapter);
+
         recordBtn.setOnClickListener(new View.OnClickListener(){
             @Override
                     public void onClick(View v){
                         startSpeechListener();
+
             }
         });
     }
@@ -75,7 +75,11 @@ public class MaximusOCR extends AppCompatActivity {
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     String[] results = result.get(0).split(" ");
 
-                    totalTxt.setText(result.get(0));
+                    description.add(results[0]);
+                    price.add(Integer.parseInt(results[1]));
+                    final ListViewItemsAdapter listViewAdapter = new ListViewItemsAdapter(this, description, price);
+                    listView.setAdapter(listViewAdapter);
+                    listViewAdapter.notifyDataSetChanged();
                 }
                 break;
             }
