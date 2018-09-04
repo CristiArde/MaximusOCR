@@ -73,6 +73,8 @@ public class MaximusOCR extends AppCompatActivity {
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                    String[] results = result.get(0).split(" ");
+
                     totalTxt.setText(result.get(0));
                 }
                 break;
