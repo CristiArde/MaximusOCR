@@ -2,7 +2,9 @@ package ai.bonobo.maximusocr;
 
 
 import android.content.ActivityNotFoundException;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.widget.Toast;
 
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,6 +28,7 @@ public class MaximusOCR extends AppCompatActivity {
     ListView listView;
     ImageButton recordBtn;
     private final int REQ_CODE_SPEECH_INPUT = 100;
+    SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,8 @@ public class MaximusOCR extends AppCompatActivity {
         listView = (ListView)findViewById(R.id.listView);
         recordBtn = (ImageButton)findViewById(R.id.recordBtn);
 
+        sharedPreferences = getApplicationContext().getSharedPreferences("ai.bonobo.maximusocr.MaximusOCR", Context.MODE_PRIVATE);
+        HashSet<String> set = (HashSet<String>) sharedPreferences.getStringSet("items", null);
 
         recordBtn.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -74,12 +80,16 @@ public class MaximusOCR extends AppCompatActivity {
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
                     String[] results = result.get(0).split(" ");
-
-                    description.add(results[0]);
-                    price.add(Integer.parseInt(results[1]));
-                    final ListViewItemsAdapter listViewAdapter = new ListViewItemsAdapter(this, description, price);
-                    listView.setAdapter(listViewAdapter);
-                    listViewAdapter.notifyDataSetChanged();
+                    if(results[0] != null  && results[1] != null) {
+                        description.add(results[0]);
+                        price.add(Integer.parseInt(results[1]));
+                        final ListViewItemsAdapter listViewAdapter = new ListViewItemsAdapter(this, description, price);
+                        listView.setAdapter(listViewAdapter);
+                        listViewAdapter.notifyDataSetChanged();
+                    }
+                    else{
+                        startSpeechListener();
+                    }
                 }
                 break;
             }
