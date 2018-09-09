@@ -7,6 +7,8 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -22,26 +24,32 @@ import java.util.Locale;
 
 public class MaximusOCR extends AppCompatActivity {
 
-    ArrayList<String> description = new ArrayList<String>();
-    ArrayList<Integer> price = new ArrayList<Integer>();
-    EditText totalTxt;
-    ListView listView;
+    RecyclerView recyclerView;
+    ItemsViewAdapter adapter;
     ImageButton recordBtn;
     private final int REQ_CODE_SPEECH_INPUT = 100;
-    SharedPreferences sharedPreferences;
+
+    List<ShoppingItem> itemsList;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maximus_ocr);
+        itemsList = new ArrayList<>();
+        recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+       // recordBtn = (ImageButton)findViewById(R.id.recordBtn);
 
-        totalTxt = (EditText)findViewById(R.id.totalTxt);
-        listView = (ListView)findViewById(R.id.listView);
-        recordBtn = (ImageButton)findViewById(R.id.recordBtn);
+        //vertical recycler view
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        sharedPreferences = getApplicationContext().getSharedPreferences("ai.bonobo.maximusocr.MaximusOCR", Context.MODE_PRIVATE);
-        HashSet<String> set = (HashSet<String>) sharedPreferences.getStringSet("items", null);
+        itemsList.add(new ShoppingItem(1,"EGGS", 4.5));
+        itemsList.add(new ShoppingItem(2,"tommatoes", 5.25));
 
+        adapter = new ItemsViewAdapter(this,itemsList);
+        recyclerView.setAdapter(adapter);
+/*
         recordBtn.setOnClickListener(new View.OnClickListener(){
             @Override
                     public void onClick(View v){
@@ -49,6 +57,7 @@ public class MaximusOCR extends AppCompatActivity {
 
             }
         });
+*/
     }
 
     private void startSpeechListener(){
@@ -79,6 +88,7 @@ public class MaximusOCR extends AppCompatActivity {
 
                     ArrayList<String> result = data
                             .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+                  /*
                     String[] results = result.get(0).split(" ");
                     if(results[0] != null  && results[1] != null) {
                         description.add(results[0]);
@@ -90,6 +100,7 @@ public class MaximusOCR extends AppCompatActivity {
                     else{
                         startSpeechListener();
                     }
+                  */
                 }
                 break;
             }
