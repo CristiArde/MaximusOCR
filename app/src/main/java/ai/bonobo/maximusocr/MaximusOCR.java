@@ -27,6 +27,7 @@ public class MaximusOCR extends AppCompatActivity {
     RecyclerView recyclerView;
     ItemsViewAdapter adapter;
     ImageButton recordBtn;
+    Integer id = 0;
     private final int REQ_CODE_SPEECH_INPUT = 100;
 
     List<ShoppingItem> itemsList;
@@ -39,17 +40,11 @@ public class MaximusOCR extends AppCompatActivity {
         itemsList = new ArrayList<>();
         recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-       // recordBtn = (ImageButton)findViewById(R.id.recordBtn);
+        recordBtn = (ImageButton)findViewById(R.id.recordBtn);
 
         //vertical recycler view
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        itemsList.add(new ShoppingItem(1,"EGGS", 4.5));
-        itemsList.add(new ShoppingItem(2,"tommatoes", 5.25));
-
-        adapter = new ItemsViewAdapter(this,itemsList);
-        recyclerView.setAdapter(adapter);
-/*
         recordBtn.setOnClickListener(new View.OnClickListener(){
             @Override
                     public void onClick(View v){
@@ -57,7 +52,7 @@ public class MaximusOCR extends AppCompatActivity {
 
             }
         });
-*/
+
     }
 
     private void startSpeechListener(){
@@ -74,6 +69,15 @@ public class MaximusOCR extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
         }
     }
+    //function to get the first assumption from the speech recognizer results.get(0) is usual the most accurate
+    private String getFirst(Intent data){
+        ArrayList<String> result = data
+                .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+        if(result != null && result.size() > 0 )
+            return result.get(0);
+
+        return  null;
+    }
 
     /**
      * Receiving speech input
@@ -86,21 +90,24 @@ public class MaximusOCR extends AppCompatActivity {
             case REQ_CODE_SPEECH_INPUT: {
                 if (resultCode == RESULT_OK && null != data) {
 
-                    ArrayList<String> result = data
-                            .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
-                  /*
-                    String[] results = result.get(0).split(" ");
-                    if(results[0] != null  && results[1] != null) {
-                        description.add(results[0]);
-                        price.add(Integer.parseInt(results[1]));
-                        final ListViewItemsAdapter listViewAdapter = new ListViewItemsAdapter(this, description, price);
-                        listView.setAdapter(listViewAdapter);
-                        listViewAdapter.notifyDataSetChanged();
+                    String recording = getFirst(data);
+                    if(recording != null) {
+                        String name="";
+                        String price="";
+                        for (int i =0; i<recording.length(); i++){
+                            if(Character.isDigit(recording.charAt(i)))
+                                price+=Character.toString(recording.charAt(i));
+                            else if (Character.isLetter(recording.charAt(i)))
+                                name+=Character.toString(recording.charAt(i));
+                        }
+                        itemsList.add(new ShoppingItem(id,name, Double.parseDouble(price)));
+                        adapter = new ItemsViewAdapter(this,itemsList);
+                        recyclerView.setAdapter(adapter);
+                        adapter.notifyDataSetChanged();
                     }
                     else{
                         startSpeechListener();
                     }
-                  */
                 }
                 break;
             }
